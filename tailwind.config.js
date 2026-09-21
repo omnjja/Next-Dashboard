@@ -13,7 +13,7 @@ module.exports = {
         "light-border": "#E2E8F0",
         "text-primary": "#0F172A",
         "text-muted": "#475569",
-        "brand-primary": "#2563EB",
+        "brand-primary": "#023e8a",
         "brand-subtle": "#EFF6FF",
         "btn-confirm": "#059669",
         "btn-cancel": "#F1F5F9",

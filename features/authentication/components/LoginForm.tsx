@@ -5,7 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAppForm } from "@/hooks/useAppForm";
-import { loginSchema, LoginFormData } from "@/schemas/loginSchema";
+import {
+  loginSchema,
+  LoginFormData,
+} from "@/features/authentication/schemas/loginSchema";
 import {
   Card,
   CardHeader,
