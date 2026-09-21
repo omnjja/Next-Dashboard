@@ -1,14 +1,18 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAppForm } from "@/hooks/useAppForm";
+import { login } from "../authSlice";
+import { signup } from "../services/authService";
 import {
   signupSchema,
   SignupFormData,
-} from "@/features/authentication/schemas/signupSchema";
+} from "../schemas/signupSchema";
 import {
   Card,
   CardHeader,
@@ -18,6 +22,8 @@ import {
 } from "@/components/ui/card";
 
 export default function SignupForm() {
+  const router = useRouter();
+  const dispatch = useDispatch();
   const form = useAppForm({
     schema: signupSchema,
     defaultValues: {
@@ -31,7 +37,16 @@ export default function SignupForm() {
   const { errors, isSubmitting } = formState;
 
   function onSubmit(data: SignupFormData) {
-    console.log("Signing up with:", data);
+    try {
+      const user = signup(data.name, data.email, data.password);
+      dispatch(login(user));
+      router.push("/");
+    } catch (error) {
+      form.setError("root", {
+        message:
+          error instanceof Error ? error.message : "Unable to create account.",
+      });
+    }
   }
 
   return (
@@ -52,6 +67,10 @@ export default function SignupForm() {
             noValidate
             className="space-y-5"
           >
+            {errors.root && (
+              <p className="text-sm text-red-600">{errors.root.message}</p>
+            )}
+
             <div className="space-y-1.5">
               <Label htmlFor="signup-name" className="text-text-muted">
                 Name

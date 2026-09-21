@@ -1,14 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAppForm } from "@/hooks/useAppForm";
-import {
-  loginSchema,
-  LoginFormData,
-} from "@/features/authentication/schemas/loginSchema";
+import { login } from "../authSlice";
+import { login as authenticate } from "../services/authService";
+
 import {
   Card,
   CardHeader,
@@ -16,8 +17,11 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
+import { LoginFormData, loginSchema } from "../schemas/loginSchema";
 
 export default function LoginForm() {
+  const router = useRouter();
+  const dispatch = useDispatch();
   const form = useAppForm({
     schema: loginSchema,
     defaultValues: { email: "", password: "" },
@@ -26,7 +30,15 @@ export default function LoginForm() {
   const { errors, isSubmitting } = formState;
 
   function onSubmit(data: LoginFormData) {
-    console.log("Logging in with:", data);
+    try {
+      const user = authenticate(data.email, data.password);
+      dispatch(login(user));
+      router.push("/");
+    } catch (error) {
+      form.setError("root", {
+        message: error instanceof Error ? error.message : "Unable to log in.",
+      });
+    }
   }
 
   return (
@@ -47,6 +59,10 @@ export default function LoginForm() {
             noValidate
             className="space-y-5"
           >
+            {errors.root && (
+              <p className="text-sm text-red-600">{errors.root.message}</p>
+            )}
+
             {/* Email */}
             <div className="space-y-1.5">
               <Label htmlFor="email" className="text-text-muted">
