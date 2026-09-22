@@ -1,12 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { DashboardUser } from "@/features/dashboard/data/mockDashboardData";
+import type { DashboardState, DashboardUser } from "@/features/dashboard/types";
 import { getDashboardUsers } from "@/features/dashboard/services/dashboardService";
-
-type DashboardState = {
-  users: DashboardUser[];
-  isLoading: boolean;
-  error: string | null;
-};
 
 const initialState: DashboardState = {
   users: [],

@@ -9,7 +9,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import type { CountryDatum } from "@/features/dashboard/utils/dashboardStats";
+import type { CountryDatum } from "@/features/dashboard/types";
 import { CHART_COLORS } from "@/features/dashboard/utils/chartColors";
 
 type UsersByCountryChartProps = {

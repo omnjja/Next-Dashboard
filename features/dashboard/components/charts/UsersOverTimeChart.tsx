@@ -9,7 +9,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import type { GrowthDatum } from "@/features/dashboard/utils/dashboardStats";
+import type { GrowthDatum } from "@/features/dashboard/types";
 import { CHART_COLORS } from "@/features/dashboard/utils/chartColors";
 
 type UsersOverTimeChartProps = {

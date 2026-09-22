@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { CalendarClock, UserCheck, UserX, Users } from "lucide-react";
 import { computeDashboardStats } from "@/features/dashboard/utils/dashboardStats";
 import { cn } from "@/lib/utils";
-import { DashboardUser } from "../data/mockDashboardData";
+import type { DashboardUser } from "../types";
 
 type StatsCardsProps = {
   users: DashboardUser[];

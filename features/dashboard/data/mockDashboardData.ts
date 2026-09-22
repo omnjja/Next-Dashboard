@@ -1,19 +1,6 @@
-export type DashboardUser = {
-  id: string;
-  name: string;
-  email: string;
-  role: "Admin" | "Manager" | "Analyst" | "Support" | "Developer";
-  status: "Active" | "Inactive";
-  country:
-    | "Canada"
-    | "Egypt"
-    | "Germany"
-    | "Japan"
-    | "United Kingdom"
-    | "United States";
-  age: number;
-  createdAt: string;
-};
+import type { DashboardUser } from "../types";
+
+export type { DashboardUser } from "../types";
 
 export const mockDashboardUsers: DashboardUser[] = [
   {

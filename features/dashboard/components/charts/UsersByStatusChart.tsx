@@ -8,7 +8,7 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
-import type { StatusDatum } from "@/features/dashboard/utils/dashboardStats";
+import type { StatusDatum } from "@/features/dashboard/types";
 import { STATUS_COLORS } from "@/features/dashboard/utils/chartColors";
 
 type UsersByStatusChartProps = {

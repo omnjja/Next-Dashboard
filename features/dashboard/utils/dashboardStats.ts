@@ -1,12 +1,11 @@
-import { DashboardUser } from "../data/mockDashboardData";
-
-
-export type DashboardStats = {
-  totalUsers: number;
-  activeUsers: number;
-  inactiveUsers: number;
-  averageAge: number;
-};
+import type {
+  CountryDatum,
+  DashboardStats,
+  DashboardUser,
+  GrowthDatum,
+  RoleDatum,
+  StatusDatum,
+} from "../types";
 
 export function computeDashboardStats(users: DashboardUser[]): DashboardStats {
   const totalUsers = users.length;
@@ -19,8 +18,6 @@ export function computeDashboardStats(users: DashboardUser[]): DashboardStats {
 
   return { totalUsers, activeUsers, inactiveUsers, averageAge };
 }
-
-export type RoleDatum = { role: DashboardUser["role"]; count: number };
 
 export function computeUsersByRole(users: DashboardUser[]): RoleDatum[] {
   const order: DashboardUser["role"][] = [
@@ -38,8 +35,6 @@ export function computeUsersByRole(users: DashboardUser[]): RoleDatum[] {
     .map((role) => ({ role, count: counts.get(role) ?? 0 }));
 }
 
-export type StatusDatum = { status: DashboardUser["status"]; count: number };
-
 export function computeUsersByStatus(users: DashboardUser[]): StatusDatum[] {
   const active = users.filter((u) => u.status === "Active").length;
   const inactive = users.length - active;
@@ -48,8 +43,6 @@ export function computeUsersByStatus(users: DashboardUser[]): StatusDatum[] {
     { status: "Inactive", count: inactive },
   ];
 }
-
-export type CountryDatum = { country: DashboardUser["country"]; count: number };
 
 export function computeUsersByCountry(users: DashboardUser[]): CountryDatum[] {
   const counts = new Map<DashboardUser["country"], number>();
@@ -60,12 +53,6 @@ export function computeUsersByCountry(users: DashboardUser[]): CountryDatum[] {
     .map(([country, count]) => ({ country, count }))
     .sort((a, b) => b.count - a.count);
 }
-
-export type GrowthDatum = {
-  month: string;
-  newUsers: number;
-  totalUsers: number;
-};
 
 export function computeUsersOverTime(users: DashboardUser[]): GrowthDatum[] {
   const monthKey = (iso: string) => {

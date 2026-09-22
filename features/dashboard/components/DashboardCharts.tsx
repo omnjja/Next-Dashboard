@@ -11,7 +11,7 @@ import { UsersByRoleChart } from "@/features/dashboard/components/charts/UsersBy
 import { UsersByStatusChart } from "@/features/dashboard/components/charts/UsersByStatusChart";
 import { UsersOverTimeChart } from "@/features/dashboard/components/charts/UsersOverTimeChart";
 import { UsersByCountryChart } from "@/features/dashboard/components/charts/UsersByCountryChart";
-import { DashboardUser } from "../data/mockDashboardData";
+import type { DashboardUser } from "../types";
 
 type DashboardChartsProps = {
   users: DashboardUser[];
