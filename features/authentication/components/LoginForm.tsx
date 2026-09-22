@@ -1,135 +1,85 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useAppForm } from "@/hooks/useAppForm";
-import { useAppDispatch } from "@/store/hooks";
-import { login } from "../authSlice";
-import { login as authenticate } from "../services/authService";
-
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
-import { LoginFormData, loginSchema } from "../schemas/loginSchema";
+import { AUTH_PATHS } from "../constants/auth";
+import { useAuthSubmit } from "../hooks/useAuthSubmit";
+import { login } from "../services/authService";
+import { loginSchema, type LoginFormData } from "../schemas/loginSchema";
+import { AuthFormField } from "./AuthFormField";
+import { AuthLayout } from "./AuthLayout";
 
 export default function LoginForm() {
-  const router = useRouter();
-  const dispatch = useAppDispatch();
-  const form = useAppForm({
+  const { register, handleSubmit, formState, setError } = useAppForm({
     schema: loginSchema,
     defaultValues: { email: "", password: "" },
   });
-  const { register, handleSubmit, formState } = form;
   const { errors, isSubmitting } = formState;
+  const { submit } = useAuthSubmit({
+    successRoute: AUTH_PATHS.dashboard,
+    defaultErrorMessage: "Unable to log in.",
+  });
 
   function onSubmit(data: LoginFormData) {
-    try {
-      const user = authenticate(data.email, data.password);
-      dispatch(login(user));
-      router.replace("/dashboard");
-    } catch (error) {
-      form.setError("root", {
-        message: error instanceof Error ? error.message : "Unable to log in.",
-      });
-    }
+    submit(
+      data,
+      (formData) => login(formData.email, formData.password),
+      setError,
+    );
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-light-base px-4">
-      <Card className="w-full max-w-md border-light-border bg-light-card shadow-sm">
-        <CardHeader>
-          <CardTitle className="text-2xl font-semibold text-text-primary">
-            Log in
-          </CardTitle>
-          <CardDescription className="text-text-muted">
-            Welcome back. Enter your details to continue.
-          </CardDescription>
-        </CardHeader>
-
-        <CardContent>
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            noValidate
-            className="space-y-5"
+    <AuthLayout
+      title="Log in"
+      description="Welcome back. Enter your details to continue."
+      footer={
+        <p className="mt-6 text-center text-sm text-text-muted">
+          Don&apos;t have an account?{" "}
+          <Link
+            href={AUTH_PATHS.signup}
+            className="font-medium text-brand-primary hover:underline"
           >
-            {errors.root && (
-              <p className="text-sm text-red-600">{errors.root.message}</p>
-            )}
+            Sign up
+          </Link>
+        </p>
+      }
+    >
+      <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
+        {errors.root && (
+          <p className="text-sm text-red-600">{errors.root.message}</p>
+        )}
 
-            {/* Email */}
-            <div className="space-y-1.5">
-              <Label htmlFor="email" className="text-text-muted">
-                Email
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                autoComplete="email"
-                {...register("email")}
-                placeholder="you@example.com"
-                aria-invalid={!!errors.email}
-                aria-describedby={errors.email ? "email-error" : undefined}
-                className="focus-visible:ring-brand-primary"
-              />
-              {errors.email && (
-                <p id="email-error" className="text-sm text-red-600">
-                  {errors.email.message}
-                </p>
-              )}
-            </div>
+        <AuthFormField
+          id="email"
+          label="Email"
+          name="email"
+          register={register}
+          type="email"
+          autoComplete="email"
+          placeholder="you@example.com"
+          error={errors.email?.message}
+        />
 
-            {/* Password */}
-            <div className="space-y-1.5">
-              <Label htmlFor="password" className="text-text-muted">
-                Password
-              </Label>
-              <Input
-                id="password"
-                type="password"
-                autoComplete="current-password"
-                {...register("password")}
-                placeholder="••••••••"
-                aria-invalid={!!errors.password}
-                aria-describedby={
-                  errors.password ? "password-error" : undefined
-                }
-                className="focus-visible:ring-brand-primary"
-              />
-              {errors.password && (
-                <p id="password-error" className="text-sm text-red-600">
-                  {errors.password.message}
-                </p>
-              )}
-            </div>
+        <AuthFormField
+          id="password"
+          label="Password"
+          name="password"
+          register={register}
+          type="password"
+          autoComplete="current-password"
+          placeholder="••••••••"
+          error={errors.password?.message}
+        />
 
-            {/* Submit */}
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-brand-primary text-white hover:bg-slate-800 cursor-pointer"
-            >
-              {isSubmitting ? "Logging in..." : "Log in"}
-            </Button>
-          </form>
-
-          <p className="mt-6 text-center text-sm text-text-muted">
-            Don&apos;t have an account?{" "}
-            <Link
-              href="/signup"
-              className="font-medium text-brand-primary hover:underline"
-            >
-              Sign up
-            </Link>
-          </p>
-        </CardContent>
-      </Card>
-    </div>
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full bg-brand-primary text-white hover:bg-slate-800 cursor-pointer"
+        >
+          {isSubmitting ? "Logging in..." : "Log in"}
+        </Button>
+      </form>
+    </AuthLayout>
   );
 }

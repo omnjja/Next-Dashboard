@@ -1,11 +1,5 @@
-export type MockUser = {
-  id: string;
-  name: string;
-  email: string;
-  password: string;
-};
+import type { MockUser } from "@/features/authentication/types/auth";
 
-export type AuthenticatedUser = Omit<MockUser, "password">;
 
 export const initialMockUsers: MockUser[] = [
   {

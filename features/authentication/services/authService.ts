@@ -1,11 +1,11 @@
 import {
-  AuthenticatedUser,
   initialMockUsers,
-  MockUser,
 } from "@/features/authentication/data/mockUsers";
-
-const USERS_STORAGE_KEY = "mock-auth-users";
-export const AUTH_STORAGE_KEY = "mock-auth-user";
+import {
+  AUTH_STORAGE_KEY,
+  USERS_STORAGE_KEY,
+} from "@/features/authentication/constants/auth";
+import type { AuthenticatedUser, MockUser } from "@/features/authentication/types/auth";
 
 function getUsers(): MockUser[] {
   if (typeof window === "undefined") return initialMockUsers;
