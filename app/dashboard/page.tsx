@@ -46,9 +46,14 @@ export default function DashboardPage() {
             <DashboardEmptyState />
           ) : (
             <div className="space-y-6">
-              <StatsCards users={users} />
-              <DashboardCharts users={users} />
-              <UsersTable users={users} />
+              <section id="analytics" className="scroll-mt-20 space-y-6">
+                <StatsCards users={users} />
+                <DashboardCharts users={users} />
+              </section>
+
+              <section id="users" className="scroll-mt-20">
+                <UsersTable users={users} />
+              </section>
             </div>
           )}
         </main>
