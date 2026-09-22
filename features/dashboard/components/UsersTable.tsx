@@ -2,7 +2,6 @@
 
 import { useDashboardTable } from "../hooks/useDashboardTable";
 import type { DashboardUser } from "../types";
-import { downloadUsersCsv } from "../utils/exportUsersCsv";
 import type { ExportFormat } from "../utils/exportUsersData";
 import { downloadUsersPdf } from "../utils/exportUsersPdf";
 import { downloadUsersXlsx } from "../utils/exportUsersXlsx";
@@ -14,7 +13,6 @@ type UsersTableProps = {
 };
 
 const EXPORT_HANDLERS: Record<ExportFormat, (users: DashboardUser[]) => void> = {
-  csv: downloadUsersCsv,
   xlsx: downloadUsersXlsx,
   pdf: downloadUsersPdf,
 };

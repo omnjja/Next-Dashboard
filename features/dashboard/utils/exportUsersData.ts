@@ -1,6 +1,6 @@
 import type { DashboardUser } from "../types";
 
-export type ExportFormat = "csv" | "xlsx" | "pdf";
+export type ExportFormat = "xlsx" | "pdf";
 
 export const EXPORT_HEADERS = [
   "Name",

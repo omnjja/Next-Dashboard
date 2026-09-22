@@ -125,9 +125,6 @@ export function UsersTableFilters({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => onExport("csv")}>
-              CSV (.csv)
-            </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onExport("xlsx")}>
               Excel (.xlsx)
             </DropdownMenuItem>
