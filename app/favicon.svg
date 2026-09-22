@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Background Rounded Box -->
+  <rect width="32" height="32" rx="8" fill="#0F172A" />
+  
+  <!-- Modern Analytics / Chart Bars -->
+  <rect x="7" y="18" width="4" height="7" rx="1" fill="#38BDF8" />
+  <rect x="14" y="12" width="4" height="13" rx="1" fill="#818CF8" />
+  <rect x="21" y="7" width="4" height="18" rx="1" fill="#C084FC" />
+</svg>
