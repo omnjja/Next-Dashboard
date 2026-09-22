@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAppForm } from "@/hooks/useAppForm";
+import { useAppDispatch } from "@/store/hooks";
 import { login } from "../authSlice";
 import { signup } from "../services/authService";
 import {
@@ -23,7 +23,7 @@ import {
 
 export default function SignupForm() {
   const router = useRouter();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const form = useAppForm({
     schema: signupSchema,
     defaultValues: {
@@ -40,7 +40,7 @@ export default function SignupForm() {
     try {
       const user = signup(data.name, data.email, data.password);
       dispatch(login(user));
-      router.push("/");
+      router.replace("/dashboard");
     } catch (error) {
       form.setError("root", {
         message:

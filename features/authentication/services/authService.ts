@@ -5,7 +5,7 @@ import {
 } from "@/features/authentication/data/mockUsers";
 
 const USERS_STORAGE_KEY = "mock-auth-users";
-const AUTH_STORAGE_KEY = "mock-auth-user";
+export const AUTH_STORAGE_KEY = "mock-auth-user";
 
 function getUsers(): MockUser[] {
   if (typeof window === "undefined") return initialMockUsers;
@@ -35,7 +35,36 @@ function userWithoutPassword(user: MockUser): AuthenticatedUser {
 }
 
 function saveAuthenticatedUser(user: AuthenticatedUser) {
+  if (typeof window === "undefined") return;
   window.localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
+}
+
+export function getAuthenticatedUser(): AuthenticatedUser | null {
+  if (typeof window === "undefined") return null;
+
+  const storedUser = window.localStorage.getItem(AUTH_STORAGE_KEY);
+  if (!storedUser) return null;
+
+  try {
+    const parsed = JSON.parse(storedUser) as Partial<AuthenticatedUser>;
+    if (
+      parsed &&
+      typeof parsed.id === "string" &&
+      typeof parsed.name === "string" &&
+      typeof parsed.email === "string"
+    ) {
+      return parsed as AuthenticatedUser;
+    }
+  } catch {
+    return null;
+  }
+
+  return null;
+}
+
+export function clearAuthenticatedUser() {
+  if (typeof window === "undefined") return;
+  window.localStorage.removeItem(AUTH_STORAGE_KEY);
 }
 
 export function login(email: string, password: string): AuthenticatedUser {
