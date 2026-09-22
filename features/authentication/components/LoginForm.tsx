@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAppForm } from "@/hooks/useAppForm";
+import { useAppDispatch } from "@/store/hooks";
 import { login } from "../authSlice";
 import { login as authenticate } from "../services/authService";
 
@@ -21,7 +21,7 @@ import { LoginFormData, loginSchema } from "../schemas/loginSchema";
 
 export default function LoginForm() {
   const router = useRouter();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const form = useAppForm({
     schema: loginSchema,
     defaultValues: { email: "", password: "" },
@@ -33,7 +33,7 @@ export default function LoginForm() {
     try {
       const user = authenticate(data.email, data.password);
       dispatch(login(user));
-      router.push("/");
+      router.replace("/dashboard");
     } catch (error) {
       form.setError("root", {
         message: error instanceof Error ? error.message : "Unable to log in.",

@@ -1,8 +1,21 @@
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAppSelector } from "@/store/hooks";
 
 export default function Home() {
-  return (
-    <div>
-      hello world
-    </div>
-  );
+  const router = useRouter();
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.replace("/dashboard");
+      return;
+    }
+
+    router.replace("/login");
+  }, [isAuthenticated, router]);
+
+  return null;
 }

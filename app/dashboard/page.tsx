@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchDashboardUsers } from "@/features/dashboard/dashboardSlice";
 import { DashboardSidebar } from "@/features/dashboard/components/DashboardSidebar";
@@ -15,15 +16,26 @@ import {
 } from "@/features/dashboard/components/DashboardStates";
 
 export default function DashboardPage() {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const { users, isLoading, error } = useAppSelector(
     (state) => state.dashboard,
   );
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      router.replace("/login");
+      return;
+    }
+
     dispatch(fetchDashboardUsers());
-  }, [dispatch]);
+  }, [dispatch, isAuthenticated, router]);
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="flex min-h-screen bg-light-base">

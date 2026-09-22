@@ -1,25 +1,38 @@
 "use client";
 
 import { BarChart3, LogOut, Users } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import { logout } from "@/features/authentication/authSlice";
+import { clearAuthenticatedUser } from "@/features/authentication/services/authService";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
 const NAV_ITEMS = [
   { label: "Analytics", href: "#analytics", icon: BarChart3 },
   { label: "Users", href: "#users", icon: Users },
 ];
 
-// Replace with the real signed-in user once auth wiring is connected here.
-const CURRENT_USER = {
-  name: "Sarah Chen",
-  email: "sarah.chen@company.com",
-  initials: "SC",
-};
-
 function SidebarContent() {
   const pathname = usePathname();
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user);
+
+  const initials =
+    user?.name
+      .split(" ")
+      .map((part) => part[0])
+      .slice(0, 2)
+      .join("")
+      .toUpperCase() || "U";
+
+  const handleLogout = () => {
+    dispatch(logout());
+    clearAuthenticatedUser();
+    router.push("/login");
+  };
 
   return (
     <div className="flex h-full min-h-0 flex-col bg-light-card">
@@ -54,22 +67,20 @@ function SidebarContent() {
       <div className="shrink-0 border-t border-light-border p-3">
         <div className="flex items-center gap-3 rounded-md px-2 py-2">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-subtle text-xs font-semibold text-brand-primary">
-            {CURRENT_USER.initials}
+            {initials}
           </div>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium text-text-primary">
-              {CURRENT_USER.name}
+              {user?.name ?? "User"}
             </p>
             <p className="truncate text-xs text-text-muted">
-              {CURRENT_USER.email}
+              {user?.email ?? ""}
             </p>
           </div>
         </div>
         <button
           type="button"
-          onClick={() => {
-            // Hook this up to the existing auth/logout logic.
-          }}
+          onClick={handleLogout}
           className="mt-1 flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-text-muted transition-colors hover:bg-light-base hover:text-btn-danger"
         >
           <LogOut className="h-4 w-4 shrink-0" />
