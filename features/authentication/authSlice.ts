@@ -1,11 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AuthenticatedUser } from "./data/mockUsers";
-import { getAuthenticatedUser } from "./services/authService";
 
-type AuthState = {
-  user: AuthenticatedUser | null;
-  isAuthenticated: boolean;
-};
+import { getAuthenticatedUser } from "./services/authService";
+import type { AuthState, AuthenticatedUser } from "./types/auth";
 
 const initialState: AuthState = (() => {
   const user = getAuthenticatedUser();

@@ -1,30 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useAppForm } from "@/hooks/useAppForm";
-import { useAppDispatch } from "@/store/hooks";
-import { login } from "../authSlice";
+import { AUTH_PATHS } from "../constants/auth";
+import { useAuthSubmit } from "../hooks/useAuthSubmit";
 import { signup } from "../services/authService";
-import {
-  signupSchema,
-  SignupFormData,
-} from "../schemas/signupSchema";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
+import { signupSchema, type SignupFormData } from "../schemas/signupSchema";
+import { AuthFormField } from "./AuthFormField";
+import { AuthLayout } from "./AuthLayout";
 
 export default function SignupForm() {
-  const router = useRouter();
-  const dispatch = useAppDispatch();
-  const form = useAppForm({
+  const { register, handleSubmit, formState, setError } = useAppForm({
     schema: signupSchema,
     defaultValues: {
       name: "",
@@ -33,154 +20,93 @@ export default function SignupForm() {
       confirmPassword: "",
     },
   });
-  const { register, handleSubmit, formState } = form;
   const { errors, isSubmitting } = formState;
+  const { submit } = useAuthSubmit({
+    successRoute: AUTH_PATHS.dashboard,
+    defaultErrorMessage: "Unable to create account.",
+  });
 
   function onSubmit(data: SignupFormData) {
-    try {
-      const user = signup(data.name, data.email, data.password);
-      dispatch(login(user));
-      router.replace("/dashboard");
-    } catch (error) {
-      form.setError("root", {
-        message:
-          error instanceof Error ? error.message : "Unable to create account.",
-      });
-    }
+    submit(
+      data,
+      (formData) =>
+        signup(formData.name, formData.email, formData.password),
+      setError,
+    );
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-light-base px-4">
-      <Card className="w-full max-w-md border-light-border bg-light-card shadow-sm">
-        <CardHeader>
-          <CardTitle className="text-2xl font-semibold text-text-primary">
-            Create your account
-          </CardTitle>
-          <CardDescription className="text-text-muted">
-            It only takes a minute to get started.
-          </CardDescription>
-        </CardHeader>
-
-        <CardContent>
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            noValidate
-            className="space-y-5"
+    <AuthLayout
+      title="Create your account"
+      description="It only takes a minute to get started."
+      footer={
+        <p className="mt-6 text-center text-sm text-text-muted">
+          Already have an account?{" "}
+          <Link
+            href={AUTH_PATHS.login}
+            className="font-medium text-brand-primary hover:underline"
           >
-            {errors.root && (
-              <p className="text-sm text-red-600">{errors.root.message}</p>
-            )}
+            Log in
+          </Link>
+        </p>
+      }
+    >
+      <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
+        {errors.root && (
+          <p className="text-sm text-red-600">{errors.root.message}</p>
+        )}
 
-            <div className="space-y-1.5">
-              <Label htmlFor="signup-name" className="text-text-muted">
-                Name
-              </Label>
-              <Input
-                id="signup-name"
-                type="text"
-                autoComplete="name"
-                {...register("name")}
-                placeholder="Your name"
-                aria-invalid={!!errors.name}
-                aria-describedby={errors.name ? "signup-name-error" : undefined}
-                className="focus-visible:ring-brand-primary"
-              />
-              {errors.name && (
-                <p id="signup-name-error" className="text-sm text-red-600">
-                  {errors.name.message}
-                </p>
-              )}
-            </div>
+        <AuthFormField
+          id="signup-name"
+          label="Name"
+          name="name"
+          register={register}
+          autoComplete="name"
+          placeholder="Your name"
+          error={errors.name?.message}
+        />
 
-            <div className="space-y-1.5">
-              <Label htmlFor="signup-email" className="text-text-muted">
-                Email
-              </Label>
-              <Input
-                id="signup-email"
-                type="email"
-                autoComplete="email"
-                {...register("email")}
-                placeholder="you@example.com"
-                aria-invalid={!!errors.email}
-                aria-describedby={
-                  errors.email ? "signup-email-error" : undefined
-                }
-                className="focus-visible:ring-brand-primary"
-              />
-              {errors.email && (
-                <p id="signup-email-error" className="text-sm text-red-600">
-                  {errors.email.message}
-                </p>
-              )}
-            </div>
+        <AuthFormField
+          id="signup-email"
+          label="Email"
+          name="email"
+          register={register}
+          type="email"
+          autoComplete="email"
+          placeholder="you@example.com"
+          error={errors.email?.message}
+        />
 
-            <div className="space-y-1.5">
-              <Label htmlFor="signup-password" className="text-text-muted">
-                Password
-              </Label>
-              <Input
-                id="signup-password"
-                type="password"
-                autoComplete="new-password"
-                {...register("password")}
-                placeholder="At least 6 characters"
-                aria-invalid={!!errors.password}
-                aria-describedby={
-                  errors.password ? "signup-password-error" : undefined
-                }
-                className="focus-visible:ring-brand-primary"
-              />
-              {errors.password && (
-                <p id="signup-password-error" className="text-sm text-red-600">
-                  {errors.password.message}
-                </p>
-              )}
-            </div>
+        <AuthFormField
+          id="signup-password"
+          label="Password"
+          name="password"
+          register={register}
+          type="password"
+          autoComplete="new-password"
+          placeholder="At least 6 characters"
+          error={errors.password?.message}
+        />
 
-            <div className="space-y-1.5">
-              <Label htmlFor="confirm-password" className="text-text-muted">
-                Confirm password
-              </Label>
-              <Input
-                id="confirm-password"
-                type="password"
-                autoComplete="new-password"
-                {...register("confirmPassword")}
-                placeholder="Re-enter your password"
-                aria-invalid={!!errors.confirmPassword}
-                aria-describedby={
-                  errors.confirmPassword ? "confirm-password-error" : undefined
-                }
-                className="focus-visible:ring-brand-primary"
-              />
-              {errors.confirmPassword && (
-                <p id="confirm-password-error" className="text-sm text-red-600">
-                  {errors.confirmPassword.message}
-                </p>
-              )}
-            </div>
+        <AuthFormField
+          id="confirm-password"
+          label="Confirm password"
+          name="confirmPassword"
+          register={register}
+          type="password"
+          autoComplete="new-password"
+          placeholder="Re-enter your password"
+          error={errors.confirmPassword?.message}
+        />
 
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-brand-primary text-white hover:bg-slate-800 cursor-pointer"
-            >
-              {isSubmitting ? "Creating account..." : "Create account"}
-            </Button>
-          </form>
-
-          <p className="mt-6 text-center text-sm text-text-muted">
-            Already have an account?{" "}
-            <Link
-              href="/login"
-              className="font-medium text-brand-primary hover:underline"
-            >
-              Log in
-            </Link>
-          </p>
-        </CardContent>
-      </Card>
-    </div>
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full bg-brand-primary text-white hover:bg-slate-800 cursor-pointer"
+        >
+          {isSubmitting ? "Creating account..." : "Create account"}
+        </Button>
+      </form>
+    </AuthLayout>
   );
 }
