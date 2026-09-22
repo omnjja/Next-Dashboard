@@ -1,6 +1,6 @@
 "use client";
 
-import { BarChart3, LogOut, Users } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
@@ -8,11 +8,7 @@ import { cn } from "@/lib/utils";
 import { logout } from "@/features/authentication/authSlice";
 import { clearAuthenticatedUser } from "@/features/authentication/services/authService";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-
-const NAV_ITEMS = [
-  { label: "Analytics", href: "#analytics", icon: BarChart3 },
-  { label: "Users", href: "#users", icon: Users },
-];
+import { DASHBOARD_NAV_ITEMS } from "../constants/dashboard";
 
 function SidebarContent() {
   const pathname = usePathname();
@@ -43,7 +39,7 @@ function SidebarContent() {
       </div>
 
       <nav className="min-h-0 flex-1 space-y-1 overflow-y-auto px-3 py-4">
-        {NAV_ITEMS.map(({ label, href, icon: Icon }) => {
+        {DASHBOARD_NAV_ITEMS.map(({ label, href, icon: Icon }) => {
           const isActive = pathname === href;
 
           return (
